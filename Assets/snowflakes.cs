@@ -21,7 +21,9 @@ public class snowflakes : MonoBehaviour
 
     private int currentPosition;
     private int target;
+    #pragma warning disable 414
     private int startingPosition; // for Souvenir
+    #pragma warning restore 414
 
     private static readonly string[] walls = new string[] {
         "DR", "DL", "DR", "L", "DR", "RLD", "LR", "LD", "R", "RLD", "LR", "LD", "D",
@@ -132,7 +134,7 @@ public class snowflakes : MonoBehaviour
         {
             module.HandlePass();
             audio.PlaySoundAtTransform("solve", transform);
-            Debug.LogFormat("[Snowflakes #[0]] You stopped at {1}. That is the target. Module solved!", moduleId, Coordinate(currentPosition));
+            Debug.LogFormat("[Snowflakes #{0}] You stopped at {1}. That is the target. Module solved!", moduleId, Coordinate(currentPosition));
             moduleSolved = true;
             StartCoroutine(SolveAnimation());
         }
