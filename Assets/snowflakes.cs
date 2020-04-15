@@ -81,7 +81,7 @@ public class snowflakes : MonoBehaviour
             case 0:
                 return currentPosition / 13 == 0 ? 39 : -13;
             case 1:
-                return currentPosition % 13 == 13 ? -12 : 1;
+                return currentPosition % 13 == 12 ? -12 : 1;
             case 2:
                 return currentPosition / 13 == 3 ? -39 : 13;
             default:
