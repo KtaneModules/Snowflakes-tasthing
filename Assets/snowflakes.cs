@@ -133,9 +133,9 @@ public class snowflakes : MonoBehaviour
         else
         {
             module.HandlePass();
+            moduleSolved = true;
             audio.PlaySoundAtTransform("solve", transform);
             Debug.LogFormat("[Snowflakes #{0}] You stopped at {1}. That is the target. Module solved!", moduleId, Coordinate(currentPosition));
-            moduleSolved = true;
             StartCoroutine(SolveAnimation());
         }
     }
@@ -178,5 +178,70 @@ public class snowflakes : MonoBehaviour
         var s1 = "ABCDEFGHIJKLM"[x % 13].ToString();
         var s2 = ((x / 13) + 1).ToString();
         return s1 + s2;
+    }
+
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} <l/r/u/d> [Presses that button, can be chained, e.g. 'lrrdlu']";
+    #pragma warning restore 414
+
+    IEnumerator ProcessTwitchCommand(string input)
+    {
+        var cmd = input.ToLowerInvariant().ToCharArray();
+        var directions = new Char[] { 'u', 'r', 'd', 'l' };
+        if (cmd.Any(x => !directions.Contains(x)))
+            yield break;
+        for (int i = 0; i < cmd.Length; i++)
+        {
+            buttons[Array.IndexOf(directions, cmd[i])].OnInteract();
+            yield return new WaitForSeconds(.1f);
+        }
+    }
+
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        var q = new Queue<int>();
+        var allMoves = new List<Movement>();
+        q.Enqueue(currentPosition);
+        while (q.Count > 0)
+        {
+            var next = q.Dequeue();
+            if (next == target)
+                goto readyToSubmit;
+            var cell = walls[next];
+            var allDirections = "URDL";
+            var offsets = new int[] { -13, 1, 13, -1 };
+            for (int i = 0; i < 4; i++)
+            {
+                if (cell.Contains(allDirections[i]) && !allMoves.Any(x => x.start == next + offsets[i]))
+                {
+                    q.Enqueue(next + offsets[i]);
+                    allMoves.Add(new Movement { start = next, end = next + offsets[i], direction = i });
+                }
+            }
+        }
+        throw new InvalidOperationException("There is a bug in maze generation.");
+        readyToSubmit:
+        if (allMoves.Count != 0) // Checks for position already being target
+        {
+            var lastMove = allMoves.First(x => x.end == target);
+            var relevantMoves = new List<Movement> { lastMove };
+            while (lastMove.start != currentPosition)
+            {
+                lastMove = allMoves.First(x => x.end == lastMove.start);
+                relevantMoves.Add(lastMove);
+            }
+            for (int i = 0; i < relevantMoves.Count; i++)
+            {
+                buttons[relevantMoves[relevantMoves.Count - 1 - i].direction].OnInteract();
+                yield return new WaitForSeconds(.1f);
+            }
+        }
+    }
+
+    class Movement
+    {
+        public int start;
+        public int end;
+        public int direction;
     }
 }
