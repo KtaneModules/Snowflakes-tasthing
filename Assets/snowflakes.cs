@@ -190,6 +190,7 @@ public class snowflakes : MonoBehaviour
         var directions = new Char[] { 'u', 'r', 'd', 'l' };
         if (cmd.Any(x => !directions.Contains(x)))
             yield break;
+        yield return null;
         for (int i = 0; i < cmd.Length; i++)
         {
             buttons[Array.IndexOf(directions, cmd[i])].OnInteract();
