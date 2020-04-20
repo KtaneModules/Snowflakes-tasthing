@@ -51,7 +51,7 @@ public class snowflakes : MonoBehaviour
 
     void Start()
     {
-        target = new GregorianCalendar().GetWeekOfYear(DateTime.UtcNow, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        target = new GregorianCalendar().GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         if (target == 53)
             target = 52;
         Debug.LogFormat("[Snowflakes #{0}] It is currently week {1}, so go to {2}.", moduleId, target, Coordinate(target - 1));
