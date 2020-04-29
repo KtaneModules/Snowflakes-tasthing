@@ -191,6 +191,13 @@ public class snowflakes : MonoBehaviour
         if (cmd.Any(x => !directions.Contains(x)))
             yield break;
         yield return null;
+        var tpPosition = currentPosition;
+        for (int i = 0; i < cmd.Length; i++)
+            tpPosition += new int[] { -13, 1, 13, -1 }[Array.IndexOf(directions, cmd[i])];
+        if (tpPosition != target)
+            yield return "strike";
+        else
+            yield return "solve";
         for (int i = 0; i < cmd.Length; i++)
         {
             buttons[Array.IndexOf(directions, cmd[i])].OnInteract();
