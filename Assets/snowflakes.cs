@@ -36,6 +36,7 @@ public class snowflakes : MonoBehaviour
     private bool hasMoved;
     private bool animating;
     private bool activated;
+    private bool hitWall;
 
     private static int moduleIdCounter = 1;
     private int moduleId;
@@ -108,6 +109,7 @@ public class snowflakes : MonoBehaviour
         audio.PlaySoundAtTransform("beep", transform);
         if (!walls[currentPosition].Contains("URDL"[ix]))
         {
+            hitWall = true;
             module.HandleStrike();
             Debug.LogFormat("[Snowflakes #{0}] You ran into a wall. Strike!", moduleId);
         }
@@ -126,8 +128,11 @@ public class snowflakes : MonoBehaviour
         if (currentPosition != target)
         {
             Debug.LogFormat("[Snowflakes #{0}] You stopped at {1}. That is not the target. Strike!", moduleId, Coordinate(currentPosition));
-            module.HandleStrike();
-            Debug.LogFormat("[Snowflakes #{0}] Resetting...", moduleId);
+            if (hitWall) {
+                module.HandleStrike();
+                Debug.LogFormat("[Snowflakes #{0}] Resetting...", moduleId);
+                hitWall = false;
+            }
             StartCoroutine(StrikeAnimation());
         }
         else
