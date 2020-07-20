@@ -125,14 +125,14 @@ public class snowflakes : MonoBehaviour
 
     void Submit()
     {
-        if (currentPosition != target)
+        if (currentPosition != target || hitWall)
         {
-            Debug.LogFormat("[Snowflakes #{0}] You stopped at {1}. That is not the target. Strike!", moduleId, Coordinate(currentPosition));
-            if (hitWall) {
+            if (!hitWall) {
                 module.HandleStrike();
-                Debug.LogFormat("[Snowflakes #{0}] Resetting...", moduleId);
+                Debug.LogFormat("[Snowflakes #{0}] You stopped at {1}. That is not the target. Strike!", moduleId, Coordinate(currentPosition));
                 hitWall = false;
             }
+            Debug.LogFormat("[Snowflakes #{0}] Resetting...", moduleId);
             StartCoroutine(StrikeAnimation());
         }
         else
