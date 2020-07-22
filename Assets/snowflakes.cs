@@ -112,6 +112,8 @@ public class snowflakes : MonoBehaviour
             hitWall = true;
             module.HandleStrike();
             Debug.LogFormat("[Snowflakes #{0}] You ran into a wall. Strike!", moduleId);
+            StopCoroutine(submittingWait);
+            Submit();
         }
         else
             currentPosition += new int[] { -13, 1, 13, -1 }[ix];
