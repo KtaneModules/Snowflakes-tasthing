@@ -113,6 +113,7 @@ public class snowflakes : MonoBehaviour
             module.HandleStrike();
             Debug.LogFormat("[Snowflakes #{0}] You ran into a wall. Strike!", moduleId);
             StopCoroutine(submittingWait);
+            StopCoroutine(CountUp());
             Submit();
         }
         else
@@ -132,8 +133,8 @@ public class snowflakes : MonoBehaviour
             if (!hitWall) {
                 module.HandleStrike();
                 Debug.LogFormat("[Snowflakes #{0}] You stopped at {1}. That is not the target. Strike!", moduleId, Coordinate(currentPosition));
-                hitWall = false;
             }
+            hitWall = false;
             Debug.LogFormat("[Snowflakes #{0}] Resetting...", moduleId);
             StartCoroutine(StrikeAnimation());
         }
@@ -230,7 +231,7 @@ public class snowflakes : MonoBehaviour
                 if (cell.Contains(allDirections[i]) && !allMoves.Any(x => x.start == next + offsets[i]))
                 {
                     q.Enqueue(next + offsets[i]);
-                    allMoves.Add(new Movement { start = next, end = next + offsets[i], direction = i });
+                    allMoves.Add(new Movement(next, next + offsets[i], i));
                 }
             }
         }
@@ -255,8 +256,15 @@ public class snowflakes : MonoBehaviour
 
     class Movement
     {
-        public int start;
-        public int end;
-        public int direction;
+        public int start { get; set; }
+        public int end { get; set; }
+        public int direction { get; set; }
+
+        public Movement(int s, int e, int d)
+        {
+            start = s;
+            end = e;
+            direction = d;
+        }
     }
 }
